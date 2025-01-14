@@ -1,6 +1,7 @@
 import { Client, GatewayIntentBits } from "discord.js";
+import { Duolingo } from "@grimille/duolingo-js";
 
-import env from "../environment.json";
+import * as env from "../environment.json";
 
 // Create a new client instance
 const client = new Client({
@@ -10,6 +11,8 @@ const client = new Client({
     GatewayIntentBits.MessageContent, // To access message content
   ],
 });
+
+const duolingo_client = new Duolingo(env.duolingo.email, env.duolingo.password);
 
 // When the bot is ready
 client.once("ready", () => {
