@@ -54,5 +54,11 @@ interface Course {
 }
 
 interface StreakData {
-  currentStreak: number | null;
+  currentStreak: CurrentStreak;
+}
+
+interface CurrentStreak {
+  startDate: string;
+  length: int;
+  endDate: string;
 }
