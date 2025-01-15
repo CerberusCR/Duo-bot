@@ -17,16 +17,22 @@ export const data = new SlashCommandBuilder()
   );
 export async function execute(interaction: any) {
   const username = interaction.options.getString("username");
-  const userData = fetchUrl(
+  const userData = await fetchUrl(
     `https://www.duolingo.com/2017-06-30/users?username=${username}`,
   );
-  const user = (await userData).users[0];
+
+  if (!userData || !userData.users || userData.users.length === 0) {
+    interaction.reply("This user does not exist on Duolingo");
+    return;
+  }
+
+  const user = userData.users[0];
 
   let isModerator: string = "";
   let streak: string = "";
 
   if (user.canUseModerationTools) {
-    let isModerator = "Is a Duolingo moderator";
+    isModerator = "Is a Duolingo moderator";
   }
 
   const learning =

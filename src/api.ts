@@ -12,6 +12,6 @@ export async function fetchUrl(apiUrl: string) {
     return data;
   } catch (e) {
     console.error();
-    throw e;
+    return;
   }
 }

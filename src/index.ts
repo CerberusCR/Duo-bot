@@ -55,6 +55,8 @@ client.once("ready", () => {
   console.log("Bot is online!");
 });
 
+client.on("ready", () => {});
+
 client.on(Events.InteractionCreate, async (interaction: any) => {
   if (!interaction.isChatInputCommand()) return;
   const command = interaction.client.commands.get(interaction.commandName);
