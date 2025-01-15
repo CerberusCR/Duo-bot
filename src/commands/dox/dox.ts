@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from "discord.js";
 import { fetchUrl } from "../../api";
 import "../../extras/date";
 import { convertUnixTimestampToDate } from "../../extras/date";
+import { languageToCountry } from "../../extras/languageToCoutry";
 
 export const data = new SlashCommandBuilder()
   .setName("dox")
@@ -21,47 +22,38 @@ export async function execute(interaction: any) {
   );
   const user = (await userData).users[0];
 
-  let isModerator = "";
-  let learning = "";
-  let native = "";
+  let isModerator: string = "";
+  let streak: string = "";
+
   if (user.canUseModerationTools) {
     let isModerator = "Is a Duolingo moderator";
   }
-  switch (user.learningLanguage) {
-    case "en":
-      learning = "gb";
-      break;
-    case "ja":
-      learning = "jp";
-      break;
 
-    default:
-      learning = user.fromLanguage;
-      break;
-  }
-  switch (user.fromLanguage) {
-    case "en":
-      native = "gb";
-      break;
-    case "ja":
-      native = "jp";
-      break;
+  const learning =
+    languageToCountry[user.learningLanguage] || user.learningLanguage;
+  const native = languageToCountry[user.fromLanguage] || user.fromLanguage;
 
-    default:
-      native = user.fromLanguage;
-      break;
+  if (!user.streakData.currentStreak) {
+    streak = "This user does not have a streak yet";
+  } else {
+    streak = `This user's streak started on \`${user.streakData.currentStreak.startDate}\``;
   }
-  interaction.reply(`
-    username: ${user.username}
-    learning: :flag_${learning}:
-    learning from: :flag_${native}:
-    current streak: ${user.streak}
-    streak started on \`${user.streakData.currentStreak.startDate}\`
-    xp: ${user.totalXp}
-    motivation: ${user.motivation}
-    email verified: \`${user.emailVerified}\`
-    account created on \`${convertUnixTimestampToDate(user.creationDate)}\`
-    ${isModerator}
-    `);
+  try {
+    interaction.reply(`
+      username: ${user.username}
+      name: ${user.name}
+      learning: :flag_${learning}:
+      learning from: :flag_${native}:
+      current streak: ${user.streak}
+      ${streak}
+      xp: ${user.totalXp}
+      motivation: ${user.motivation}
+      email verified: \`${user.emailVerified}\`
+      account created on \`${convertUnixTimestampToDate(user.creationDate)}\`
+      ${isModerator}
+      `);
+  } catch (e) {
+    console.error(e);
+  }
   console.log((await userData).users[0]);
 }

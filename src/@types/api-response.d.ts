@@ -22,6 +22,7 @@ interface User {
   _achievements: any[]; // Type of elements can be defined if known
   observedClassroomIds: any[]; // Type of elements can be defined if known
   username: string;
+  name: string;
   bio: string;
   profileCountry: string | null;
   chinaUserModerationRecords: any[]; // Type of elements can be defined if known
