@@ -1,40 +1,33 @@
-import { Client, GatewayIntentBits } from "discord.js";
-import { Duolingo } from "@grimille/duolingo-js";
+import { Client, GatewayIntentBits, Poll } from "discord.js";
+import fs from "fs";
+import { fetchUrl } from "./api";
 
-import * as env from "../environment.json";
+import { EnvironmentConfig } from "./@types/env";
+import environment from "../environment.json";
+
+const env: EnvironmentConfig = environment;
 
 // Create a new client instance
 const client = new Client({
   intents: [
-    GatewayIntentBits.Guilds, // For guild-related events
-    GatewayIntentBits.GuildMessages, // To receive messages in guilds
-    GatewayIntentBits.MessageContent, // To access message content
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
   ],
 });
 
-const duolingo_client = new Duolingo(env.duolingo.email, env.duolingo.password);
-
-// When the bot is ready
 client.once("ready", () => {
   console.log("Bot is online!");
 });
 
 client.on("messageCreate", async (message) => {
-  if (message.author.bot) return;
-  console.log(message);
-  if (message.content === "!guh") {
-    if (!message.guild) return;
-    const botMember = message.guild.members.me;
-    if (botMember?.permissions.has("ManageMessages")) {
-      await message.delete();
-
-      try {
-        const user = await client.users.fetch("");
-        await user.send("");
-      } catch (e) {
-        console.log(e);
-      }
-    }
+  if (message.content === "!streak") {
+    let user = "taigo525546";
+    let userdata = fetchUrl(
+      `https://www.duolingo.com/2017-06-30/users?username=${user}`,
+    );
+    console.log((await userdata).users[0].streak);
+    message.channel.send(`${(await userdata).users[0].streak}`);
   }
 });
 

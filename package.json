@@ -6,7 +6,6 @@
   "author": "<taigo@cock.li>",
   "license": "GPL-3.0",
   "dependencies": {
-    "@grimille/duolingo-js": "^0.4.1",
     "discord.js": "^14.17.3",
     "tsc": "^2.0.4",
     "typescript": "^5.7.3"
