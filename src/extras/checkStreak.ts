@@ -1,6 +1,8 @@
 import { User } from "discord.js";
 import luoDingoUsers from "../../connected-users.json";
 import { fetchUrl } from "../api";
+import { getRandomInt } from "./getRandomInt";
+import { deathThreats } from "./deathTheats";
 
 interface connectedUser {
   discord_id: string;
@@ -25,13 +27,22 @@ export async function checkStreak(discordUser: User | null) {
     console.error(e);
   }
   const luoUser = duolingoUserData?.users[0];
-  if (luoUser?.streak == 0) {
-    discordUser?.send(
-      "Your streak is crying in the corner, do you want to join it?",
-    );
-  } else if (luoUser?.streak == 10) {
-    discordUser?.send(
-      "Wow great, a streak of 10! You're safe from me, for now.",
-    );
+  let randomInteger: number;
+  switch (luoUser?.streak) {
+    case 0:
+      randomInteger = getRandomInt(0, deathThreats["0"].length);
+      discordUser?.send(deathThreats["0"][randomInteger]);
+      break;
+    case 10:
+      randomInteger = getRandomInt(0, deathThreats["10"].length);
+      discordUser?.send(deathThreats["10"][randomInteger]);
+      break;
+    case 15:
+      randomInteger = getRandomInt(0, deathThreats["15"].length);
+      discordUser?.send(deathThreats["15"][randomInteger]);
+      break;
+
+    default:
+      break;
   }
 }
