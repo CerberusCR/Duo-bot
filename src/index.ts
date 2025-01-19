@@ -8,6 +8,7 @@ import {
   MessageFlags,
   REST,
   Poll,
+  Presence,
 } from "discord.js";
 import path from "path";
 import fs from "fs";
@@ -16,6 +17,7 @@ import { fetchUrl } from "./api";
 import { EnvironmentConfig } from "./@types/env";
 import environment from "../environment.json";
 import internal from "stream";
+import { checkStreak } from "./extras/checkStreak";
 
 const env: EnvironmentConfig = environment;
 const foldersPath = path.join(__dirname, "commands");
@@ -27,6 +29,7 @@ const client: any = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildPresences,
   ],
 });
 
@@ -57,6 +60,18 @@ client.once("ready", () => {
 
 client.on("ready", () => {});
 
+client.on(
+  "presenceUpdate",
+  async (oldPresence: Presence, newPresence: Presence) => {
+    if (!newPresence.user || newPresence.user.bot) return;
+    if (newPresence.status === "online") {
+      setTimeout(() => {
+        checkStreak(newPresence.user);
+      }, 180000);
+    }
+  },
+);
+
 client.on(Events.InteractionCreate, async (interaction: any) => {
   if (!interaction.isChatInputCommand()) return;
   const command = interaction.client.commands.get(interaction.commandName);
@@ -82,17 +97,6 @@ client.on(Events.InteractionCreate, async (interaction: any) => {
       });
     }
   }
-});
-
-client.on("messageCreate", async (message: any) => {
-  // if (message.content === "!streak") {
-  //   let user = "taigo525546";
-  //   let userdata = fetchUrl(
-  //     `https://www.duolingo.com/2017-06-30/users?username=${user}`,
-  //   );
-  //   console.log((await userdata).users[0].streak);
-  //   message.channel.send(`${(await userdata).users[0].streak}`);
-  // }
 });
 
 // Log in to Discord with your bot token

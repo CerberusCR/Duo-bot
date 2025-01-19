@@ -1,8 +1,8 @@
 interface ApiResponse {
-  users: User[];
+  users: conUser[];
 }
 
-interface User {
+interface conUser {
   joinedClassroomIds: any[]; // If it's an array, you can define the type of its elements, if known
   streak: number;
   motivation: string;

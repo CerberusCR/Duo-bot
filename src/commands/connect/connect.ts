@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from "discord.js";
 import fs from "fs";
 import { fetchUrl } from "../../api";
+import { disconnect } from "process";
 
 export const data = new SlashCommandBuilder()
   .setName("connect")
@@ -28,6 +29,7 @@ export async function execute(interaction: any) {
   const duolingo_user = userData.users[0];
 
   let appendData = {
+    discord_id: interaction.user.id,
     discord_username: discord_user,
     duolingo_username: duolingo_user.username,
   };
